@@ -4,13 +4,17 @@ session_start();
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
-
+if(isset($_GET['cancel']))
+		  {
+		          mysql_query("update appointment set userStatus='0' where id = '".$_GET['id']."'");
+                  $_SESSION['msg']="Hủy lịch khám thành công!!!";
+		  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Doctor | Appointment History</title>
+    <title>User | Appointment History</title>
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
@@ -50,14 +54,14 @@ check_login();
                     <section id="page-title">
                         <div class="row">
                             <div class="col-sm-8">
-                                <h1 class="mainTitle">Danh sách lịch khám</h1>
+                                <h1 class="mainTitle">User | Lịch khám</h1>
                             </div>
                             <ol class="breadcrumb">
                                 <li>
-                                    <span>Bác sĩ </span>
+                                    <span>User </span>
                                 </li>
                                 <li class="active">
-                                    <span>Danh sách lịch khám</span>
+                                    <span>Lịch khám</span>
                                 </li>
                             </ol>
                         </div>
@@ -76,7 +80,7 @@ check_login();
                                     <thead>
                                         <tr>
                                             <th class="center">STT</th>
-                                            <th class="hidden-xs">Tên Bệnh nhân</th>
+                                            <th class="hidden-xs">Bác sĩ</th>
                                             <th>Khoa khám</th>
                                             <th>Chi phí</th>
                                             <th>Thời gian khám</th>
@@ -88,7 +92,7 @@ check_login();
                                     </thead>
                                     <tbody>
                                         <?php
-$sql=mysql_query("select users.fullName as fname,appointment.*  from appointment join users on users.id=appointment.userId where appointment.doctorId='".$_SESSION['id']."'");
+$sql=mysql_query("select doctors.doctorName as docname,appointment.*  from appointment join doctors on doctors.id=appointment.doctorId where appointment.userId='".$_SESSION['id']."'");
 $cnt=1;
 while($row=mysql_fetch_array($sql))
 {
@@ -96,7 +100,7 @@ while($row=mysql_fetch_array($sql))
 
                                         <tr>
                                             <td class="center"><?php echo $cnt;?>.</td>
-                                            <td class="hidden-xs"><?php echo $row['fname'];?></td>
+                                            <td class="hidden-xs"><?php echo $row['docname'];?></td>
                                             <td><?php echo $row['doctorSpecialization'];?></td>
                                             <td><?php echo $row['consultancyFees'];?></td>
                                             <td><?php echo $row['appointmentDate'];?> / <?php echo
@@ -104,31 +108,56 @@ while($row=mysql_fetch_array($sql))
                                             </td>
                                             <td><?php echo $row['postingDate'];?></td>
                                             <td>
-                                                <?php if(($row['doctorStatus']==0))  
+                                                <?php if(($row['userStatus']==0) && ($row['doctorStatus']==0))  
 														{
-															echo "Lịch đã Hủy";
+															echo "Đã Hủy";
 														}
-														if( ($row['doctorStatus']==1))  
+
+														if(($row['userStatus']==1) && ($row['doctorStatus']==0))  
 														{
-															echo "Đang đợi xác nhận";
+															echo "Bác sĩ đã hủy lịch";
 														}
-														if(($row['doctorStatus']==2))  
+
+                                                        if(($row['userStatus']==0) && ($row['doctorStatus']==2))  
 														{
 															echo "Đã khám";
 														}
-												?>
+														
+														if(($row['userStatus']==0) && ($row['doctorStatus']==1))  
+														{
+															echo "Lịch đã hủy bởi bạn";
+														}
 
-                                            </td>
+														if(($row['userStatus']==1) && ($row['doctorStatus']==1))  
+														{
+															echo "Lịch khám đang chờ";
+														}
+                                                        
+                                                        if(($row['userStatus']==1) && ($row['doctorStatus']==2))  
+														{
+															echo "Lịch khám đã hoàn thành";
+														}
+                                                        if(($row['userStatus']==1) && ($row['doctorStatus']==3))  
+														{
+															echo "Lịch khám xác nhận";
+														}?>
+                                                        
+                                                    </td>
                                             <td>
                                                 <div class="visible-md visible-lg hidden-sm hidden-xs">
-                                                    <form action="update.php?id=<?php echo $row['id']?>" method="post">
-                                                        <select name="option" id="">
-                                                            <option value="0">Hủy Bỏ</option>
-                                                            <option value="1">Đang đợi xác nhận</option>
-                                                            <option value="2">Đã khám</option>
-                                                        </select>
-                                                        <button type="submit" name="update">Cập Nhật</button>
-                                                    </form>
+                                                    <?php if(($row['userStatus']==1) && ($row['doctorStatus']==1))  
+{ ?>
+
+
+                                                    <a href="appointment-history.php?id=<?php echo $row['id']?>&cancel=update"
+                                                        onClick="return confirm('Bạn chắc chắn muốn hủy cuộc hẹn này?')"
+                                                        class="btn btn-transparent btn-xs tooltips"
+                                                        title="Cancel Appointment" tooltip-placement="top"
+                                                        tooltip="Remove">HỦY</a>
+                                                    <?php } else {
+
+		echo "";
+		} ?>
                                                 </div>
                                                 <div class="visible-xs visible-sm hidden-md hidden-lg">
                                                     <div class="btn-group" dropdown is-open="status.isopen">

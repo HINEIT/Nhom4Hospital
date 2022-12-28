@@ -25,7 +25,7 @@ $_SESSION['login']=$_POST['username'];
 $uip=$_SERVER['REMOTE_ADDR'];
 $status=0;
 mysql_query("insert into userlog(username,userip,status) values('".$_SESSION['login']."','$uip','$status')");
-$_SESSION['errmsg']="Invalid username or password";
+$_SESSION['errmsg']="Sai tài khoản hoặc mật khẩu";
 $extra="user-login.php";
 $host  = $_SERVER['HTTP_HOST'];
 $uri  = rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
@@ -40,7 +40,7 @@ exit();
 <html lang="en">
 	<head>
 		<title>User-Login</title>
-		<meta charset="utf-8" />
+		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">

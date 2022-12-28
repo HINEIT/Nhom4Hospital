@@ -4,31 +4,25 @@ session_start();
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
-
 if(isset($_POST['submit']))
 {
+	$fname=$_POST['fname'];
+$address=$_POST['address'];
+$city=$_POST['city'];
+$gender=$_POST['gender'];
 
-$specilization=$_POST['Doctorspecialization'];
-$doctorid=$_POST['doctor'];
-$userid=$_SESSION['id'];
-$fees=$_POST['fees'];
-$appdate=$_POST['appdate'];
-$time=$_POST['apptime'];
-$userstatus=1;
-$docstatus=1;
+$sql=mysql_query("Update users set fullName='$fname',address='$address',city='$city',gender='$gender' where email='".$_SESSION['login']."'");
+if($sql)
+{
+echo "<script>alert('Cập nhật thông tin thành công');</script>";
 
-	$query=mysql_query("insert into appointment(doctorSpecialization,doctorId,userId,consultancyFees,appointmentDate,appointmentTime,userStatus,doctorStatus) values('$specilization','$doctorid','$userid','$fees','$appdate','$time','$userstatus','$docstatus')");
-	if($query)
-	{
-		echo "<script>alert('Your appointment successfully booked');</script>";
-	}
-
+}
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>User  | Book Appointment</title>
+		<title>User | Edit Profile</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -49,34 +43,6 @@ $docstatus=1;
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
-		<script>
-function getdoctor(val) {
-	$.ajax({
-	type: "POST",
-	url: "get_doctor.php",
-	data:'specilizationid='+val,
-	success: function(data){
-		$("#doctor").html(data);
-	}
-	});
-}
-</script>	
-
-
-<script>
-function getfee(val) {
-	$.ajax({
-	type: "POST",
-	url: "get_doctor.php",
-	data:'doctor='+val,
-	success: function(data){
-		$("#fees").html(data);
-	}
-	});
-}
-</script>	
-
-
 
 
 	</head>
@@ -84,9 +50,9 @@ function getfee(val) {
 		<div id="app">		
 <?php include('include/sidebar.php');?>
 			<div class="app-content">
-			
+				
 						<?php include('include/header.php');?>
-					
+						
 				<!-- end: TOP NAVBAR -->
 				<div class="main-content" >
 					<div class="wrap-content container" id="container">
@@ -94,16 +60,17 @@ function getfee(val) {
 						<section id="page-title">
 							<div class="row">
 								<div class="col-sm-8">
-									<h1 class="mainTitle">ĐẶT LỊCH KHÁM</h1>
+									<h1 class="mainTitle">Thông tin</h1>
 																	</div>
 								<ol class="breadcrumb">
 									<li>
-										<span>User</span>
+										<span>User </span>
 									</li>
 									<li class="active">
-										<span>Book Appointment</span>
+										<span>Thông tin</span>
 									</li>
 								</ol>
+							</div>
 						</section>
 						<!-- end: PAGE TITLE -->
 						<!-- start: BASIC EXAMPLE -->
@@ -115,76 +82,59 @@ function getfee(val) {
 										<div class="col-lg-8 col-md-12">
 											<div class="panel panel-white">
 												<div class="panel-heading">
-													<h5 class="panel-title">Vui lòng nhập thông tin</h5>
+													<h5 class="panel-title">Edit Profile</h5>
 												</div>
 												<div class="panel-body">
-								<p style="color:red;"><?php echo htmlentities($_SESSION['msg1']);?>
-								<?php echo htmlentities($_SESSION['msg1']="");?></p>	
-													<form role="form" name="book" method="post" >
-														
-
-
-<div class="form-group">
-															<label for="DoctorSpecialization">
-																Khoa khám
-															</label>
-							<select name="Doctorspecialization" class="form-control" onChange="getdoctor(this.value);" required="required">
-																<option value="">Select Specialization</option>
-<?php $ret=mysql_query("select * from doctorspecilization");
-while($row=mysql_fetch_array($ret))
+									<?php $sql=mysql_query("select * from users where email='".$_SESSION['login']."'");
+while($data=mysql_fetch_array($sql))
 {
 ?>
-																<option value="<?php echo htmlentities($row['specilization']);?>">
-																	<?php echo htmlentities($row['specilization']);?>
-																</option>
-																<?php } ?>
-																
-															</select>
-														</div>
-
-
-
-
-														<div class="form-group">
-															<label for="doctor">
-																Bác sĩ
-															</label>
-						<select name="doctor" class="form-control" id="doctor" onChange="getfee(this.value);" required="required">
-						<option value="">Select Doctor</option>
-						</select>
-														</div>
-
-
-
-
-
-														<div class="form-group">
-															<label for="consultancyfees">
-																Chi phí
-															</label>
-					<select name="fees" class="form-control" id="fees"  readonly>
-						
-						</select>
-														</div>
-														
-<div class="form-group">
-															<label for="AppointmentDate">
-																Ngày khám
-															</label>
-									<input class="form-control datepicker" name="appdate"  type="date" required="required">
-														</div>
-														
-<div class="form-group">
-															<label for="Appointmenttime">
-														
-														Thời gian
+													<form role="form" name="edit" method="post">
 													
+
+<div class="form-group">
+															<label for="fname">
+																 User Name
 															</label>
-									<input class="form-control datepicker" name="apptime" type="time" required="required">
-														</div>														
+	<input type="text" name="fname" class="form-control" value="<?php echo htmlentities($data['fullName']);?>" >
+														</div>
+
+
+<div class="form-group">
+															<label for="address">
+																 Address
+															</label>
+					<textarea name="address" class="form-control"><?php echo htmlentities($data['address']);?></textarea>
+														</div>
+<div class="form-group">
+															<label for="city">
+																 City
+															</label>
+		<input type="text" name="city" class="form-control" required="required"  value="<?php echo htmlentities($data['city']);?>" >
+														</div>
+	
+<div class="form-group">
+									<label for="gender">
+																Gender
+															</label>
+					<input type="text" name="gender" class="form-control" required="required"  value="<?php echo htmlentities($data['gender']);?>">
+														</div>
+
+<div class="form-group">
+									<label for="fess">
+																 User Email
+															</label>
+					<input type="email" name="uemail" class="form-control"  readonly="readonly"  value="<?php echo htmlentities($data['email']);?>">
+														</div>
+
+
+
+														
+														<?php } ?>
+														
 														
 														<button type="submit" name="submit" class="btn btn-o btn-primary">
-															Đặt
+															Update
 														</button>
 													</form>
 												</div>
@@ -193,10 +143,15 @@ while($row=mysql_fetch_array($ret))
 											
 											</div>
 										</div>
-									
+									<div class="col-lg-12 col-md-12">
+											<div class="panel panel-white">
+												
+												
+											</div>
+										</div>
 									</div>
 								</div>
-							
+						
 						<!-- end: BASIC EXAMPLE -->
 			
 					
@@ -241,8 +196,5 @@ while($row=mysql_fetch_array($ret))
 		</script>
 		<!-- end: JavaScript Event Handlers for this page -->
 		<!-- end: CLIP-TWO JAVASCRIPTS -->
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-
 	</body>
 </html>

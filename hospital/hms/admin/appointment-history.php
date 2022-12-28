@@ -53,10 +53,10 @@ check_login();
                             </div>
                             <ol class="breadcrumb">
                                 <li>
-                                    <span>Patients </span>
+                                    <span>Admin </span>
                                 </li>
                                 <li class="active">
-                                    <span>Appointment History</span>
+                                    <span>Lịch khám</span>
                                 </li>
                             </ol>
                         </div>
@@ -82,7 +82,7 @@ check_login();
                                             <th>Ngày khám</th>
                                             <th>Ngày tạo</th>
                                             <th>Trạng thái</th>
-                                            <th>Tùy chọn</th>
+                                            <!-- <th>Tùy chọn</th> -->
 
                                         </tr>
                                     </thead>
@@ -111,60 +111,18 @@ while($row=mysql_fetch_array($sql))
 }
 if(($row['userStatus']==0) && ($row['doctorStatus']==1))  
 {
-	echo "Cancel by Patient";
+	echo "Hủy bởi bệnh nhân";
 }
 
 if(($row['userStatus']==1) && ($row['doctorStatus']==0))  
 {
-	echo "Cancel by Doctor";
+	echo "Hủy bởi bác sĩ";
 }
 
 
 
 												?></td>
-                                            <td>
-                                                <div class="visible-md visible-lg hidden-sm hidden-xs">
-                                                    <?php if(($row['userStatus']==1) && ($row['doctorStatus']==1))  
-{ ?>
-
-
-                                                    <a href="appointment-history.php?id=<?php echo $row['id']?>&cancel=update"
-                                                        onClick="return confirm('Are you sure you want to cancel this appointment ?')"
-                                                        class="btn btn-transparent btn-xs tooltips"
-                                                        title="Cancel Appointment" tooltip-placement="top"
-                                                        tooltip="Remove">Cancel</a>
-                                                    <?php } else {
-
-		echo "Canceled";
-		} ?>
-                                                </div>
-                                                <div class="visible-xs visible-sm hidden-md hidden-lg">
-                                                    <div class="btn-group" dropdown is-open="status.isopen">
-                                                        <button type="button"
-                                                            class="btn btn-primary btn-o btn-sm dropdown-toggle"
-                                                            dropdown-toggle>
-                                                            <i class="fa fa-cog"></i>&nbsp;<span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu pull-right dropdown-light" role="menu">
-                                                            <li>
-                                                                <a href="#">
-                                                                    Edit
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    Share
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    Remove
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                            <!--  -->
                                         </tr>
 
                                         <?php 

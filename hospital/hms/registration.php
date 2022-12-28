@@ -11,7 +11,7 @@ $password=md5($_POST['password']);
 $query=mysql_query("insert into users(fullname,address,city,gender,email,password) values('$fname','$address','$city','$gender','$email','$password')");
 if($query)
 {
-	echo "<script>alert('Successfully Registered. You can login now');</script>";
+	echo "<script>alert('Tạo tài khooản thành công!!!');</script>";
 	//header('location:user-login.php');
 }
 }
@@ -128,6 +128,11 @@ if($query)
 				</div>
 
 			</div>
+			<a href="http://localhost/hospital">
+				<button type="submit" class="btn btn-primary" name="submit" style="margin-top: 20px;" >
+					TRANG CHỦ
+				</button>
+			</a>
 		</div>
 		<script src="vendor/jquery/jquery.min.js"></script>
 		<script src="vendor/bootstrap/js/bootstrap.min.js"></script>

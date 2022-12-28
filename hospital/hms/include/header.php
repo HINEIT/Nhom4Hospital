@@ -46,6 +46,11 @@ while($row=mysql_fetch_array($query))
 										</a>
 									</li>
 									<li>
+										<a href="change-password.php">
+											Đổi mật khẩu
+										</a>
+									</li>
+									<li>
 										<a href="logout.php">
 											Đăng xuất
 										</a>

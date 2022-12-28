@@ -3,10 +3,18 @@
 
 Login Details for admin : admin
               Password : Test@12345
-Login Details for Patient: vu1@gmail.com 
+Login Details for Patient: 	bnvu@gmail.com
+				bnhien@gmail.com 
+				bnkhoa@gmail.com 
+				bntuong@gmail.com 
+				bnlong@gmail.com  
                 Password : 123456
-Login Details for Doctor: test@demo.com 
-                Password : Test@123
+Login Details for Doctor: 	bsvu@gmail.com 
+				bshien@gmail.com 
+				bskhoa@gmail.com 
+				bstuong@gmail.com 
+				bslong@gmail.com  
+                Password : 123456
 
 
 DON'T FORGET TO CREATE A DATABASE NAMING "hms.sql" AND IMPORT THE SQL FILE AND RUN.

@@ -3,26 +3,32 @@ session_start();
 //error_reporting(0);
 include('include/config.php');
 include('include/checklogin.php');
+check_login();
+
 if(isset($_POST['submit']))
 {
-	$docspecialization=$_POST['Doctorspecialization'];
-$docname=$_POST['docname'];
-$docaddress=$_POST['clinicaddress'];
-$docfees=$_POST['docfees'];
-$doccontactno=$_POST['doccontact'];
-$docemail=$_POST['docemail'];
-$sql=mysql_query("Update doctors set specilization='$docspecialization',doctorName='$docname',address='$docaddress',docFees='$docfees',contactno='$doccontactno',docEmail='$docemail' where docEmail='".$_SESSION['dlogin']."'");
-if($sql)
-{
-echo "<script>alert('Doctor Details updated Successfully');</script>";
 
-}
+$specilization=$_POST['Doctorspecialization'];
+$doctorid=$_POST['doctor'];
+$userid=$_SESSION['id'];
+$fees=$_POST['fees'];
+$appdate=$_POST['appdate'];
+$time=$_POST['apptime'];
+$userstatus=1;
+$docstatus=1;
+
+	$query=mysql_query("insert into appointment(doctorSpecialization,doctorId,userId,consultancyFees,appointmentDate,appointmentTime,userStatus,doctorStatus) values('$specilization','$doctorid','$userid','$fees','$appdate','$time','$userstatus','$docstatus')");
+	if($query)
+	{
+		echo "<script>alert('Đặt lịch khám thành công!!!');</script>";
+	}
+
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Doctr | Edit Doctor Details</title>
+		<title>User  | Book Appointment</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -43,6 +49,34 @@ echo "<script>alert('Doctor Details updated Successfully');</script>";
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
+		<script>
+function getdoctor(val) {
+	$.ajax({
+	type: "POST",
+	url: "get_doctor.php",
+	data:'specilizationid='+val,
+	success: function(data){
+		$("#doctor").html(data);
+	}
+	});
+}
+</script>	
+
+
+<script>
+function getfee(val) {
+	$.ajax({
+	type: "POST",
+	url: "get_doctor.php",
+	data:'doctor='+val,
+	success: function(data){
+		$("#fees").html(data);
+	}
+	});
+}
+</script>	
+
+
 
 
 	</head>
@@ -50,24 +84,26 @@ echo "<script>alert('Doctor Details updated Successfully');</script>";
 		<div id="app">		
 <?php include('include/sidebar.php');?>
 			<div class="app-content">
-				<?php include('include/header.php');?>
+			
+						<?php include('include/header.php');?>
+					
+				<!-- end: TOP NAVBAR -->
 				<div class="main-content" >
 					<div class="wrap-content container" id="container">
 						<!-- start: PAGE TITLE -->
 						<section id="page-title">
 							<div class="row">
 								<div class="col-sm-8">
-									<h1 class="mainTitle">BÁC SĨ | Cập nhật thông tin</h1>
+									<h1 class="mainTitle">ĐẶT LỊCH KHÁM</h1>
 																	</div>
 								<ol class="breadcrumb">
 									<li>
-										<span>Doctor</span>
+										<span>User</span>
 									</li>
 									<li class="active">
-										<span>Edit Doctor Details</span>
+										<span>Đặt lịch khám</span>
 									</li>
 								</ol>
-							</div>
 						</section>
 						<!-- end: PAGE TITLE -->
 						<!-- start: BASIC EXAMPLE -->
@@ -82,18 +118,18 @@ echo "<script>alert('Doctor Details updated Successfully');</script>";
 													<h5 class="panel-title">Vui lòng nhập thông tin</h5>
 												</div>
 												<div class="panel-body">
-									<?php $sql=mysql_query("select * from doctors where docEmail='".$_SESSION['dlogin']."'");
-while($data=mysql_fetch_array($sql))
-{
-?>
-													<form role="form" name="adddoc" method="post" onSubmit="return valid();">
-														<div class="form-group">
+								<p style="color:red;"><?php echo htmlentities($_SESSION['msg1']);?>
+								<?php echo htmlentities($_SESSION['msg1']="");?></p>	
+													<form role="form" name="book" method="post" >
+														
+
+
+<div class="form-group">
 															<label for="DoctorSpecialization">
 																Khoa khám
 															</label>
-							<select name="Doctorspecialization" class="form-control" required="required">
-					<option value="<?php echo htmlentities($data['specilization']);?>">
-					<?php echo htmlentities($data['specilization']);?></option>
+							<select name="Doctorspecialization" class="form-control" onChange="getdoctor(this.value);" required="required">
+																<option value="">Chọn khoa khám</option>
 <?php $ret=mysql_query("select * from doctorspecilization");
 while($row=mysql_fetch_array($ret))
 {
@@ -106,49 +142,49 @@ while($row=mysql_fetch_array($ret))
 															</select>
 														</div>
 
-<div class="form-group">
-															<label for="doctorname">
-																 Tên 
-															</label>
-	<input type="text" name="docname" class="form-control" value="<?php echo htmlentities($data['doctorName']);?>" >
-														</div>
 
 
-<div class="form-group">
-															<label for="address">
-																 Địa chỉ phòng khám
-															</label>
-					<textarea name="clinicaddress" class="form-control"><?php echo htmlentities($data['address']);?></textarea>
-														</div>
-<div class="form-group">
-															<label for="fess">
-																 Chi phí
-															</label>
-		<input type="text" name="docfees" class="form-control" required="required"  value="<?php echo htmlentities($data['docFees']);?>" >
-														</div>
-	
-<div class="form-group">
-									<label for="fess">
-																 Số điện thoại
-															</label>
-					<input type="text" name="doccontact" class="form-control" required="required"  value="<?php echo htmlentities($data['contactno']);?>">
-														</div>
 
-<div class="form-group">
-									<label for="fess">
-																 Email
+														<div class="form-group">
+															<label for="doctor">
+																Bác sĩ
 															</label>
-					<input type="email" name="docemail" class="form-control"  readonly="readonly"  value="<?php echo htmlentities($data['docEmail']);?>">
+						<select name="doctor" class="form-control" id="doctor" onChange="getfee(this.value);" required="required">
+						<option value="">Chọn Bác sĩ</option>
+						</select>
 														</div>
 
 
 
+
+
+														<div class="form-group">
+															<label for="consultancyfees">
+																Chi phí
+															</label>
+					<select name="fees" class="form-control" id="fees"  readonly>
+						
+						</select>
+														</div>
 														
-														<?php } ?>
+<div class="form-group">
+															<label for="AppointmentDate">
+																Ngày khám
+															</label>
+									<input class="form-control datepicker" name="appdate"  type="date" required="required">
+														</div>
 														
+<div class="form-group">
+															<label for="Appointmenttime">
+														
+														Thời gian
+													
+															</label>
+									<input class="form-control datepicker" name="apptime" type="time" required="required">
+														</div>														
 														
 														<button type="submit" name="submit" class="btn btn-o btn-primary">
-															Cập nhật
+															Đặt
 														</button>
 													</form>
 												</div>
@@ -158,6 +194,7 @@ while($row=mysql_fetch_array($ret))
 											</div>
 										</div>
 									
+									</div>
 								</div>
 							
 						<!-- end: BASIC EXAMPLE -->
@@ -204,5 +241,8 @@ while($row=mysql_fetch_array($ret))
 		</script>
 		<!-- end: JavaScript Event Handlers for this page -->
 		<!-- end: CLIP-TWO JAVASCRIPTS -->
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
 	</body>
 </html>

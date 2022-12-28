@@ -3,18 +3,18 @@ session_start();
 //error_reporting(0);
 include('include/config.php');
 include('include/checklogin.php');
-check_login();
 if(isset($_POST['submit']))
 {
-	$fname=$_POST['fname'];
-$address=$_POST['address'];
-$city=$_POST['city'];
-$gender=$_POST['gender'];
-
-$sql=mysql_query("Update users set fullName='$fname',address='$address',city='$city',gender='$gender' where email='".$_SESSION['login']."'");
+	$docspecialization=$_POST['Doctorspecialization'];
+$docname=$_POST['docname'];
+$docaddress=$_POST['clinicaddress'];
+$docfees=$_POST['docfees'];
+$doccontactno=$_POST['doccontact'];
+$docemail=$_POST['docemail'];
+$sql=mysql_query("Update doctors set specilization='$docspecialization',doctorName='$docname',address='$docaddress',docFees='$docfees',contactno='$doccontactno',docEmail='$docemail' where docEmail='".$_SESSION['dlogin']."'");
 if($sql)
 {
-echo "<script>alert('Your Profile updated Successfully');</script>";
+echo "<script>alert('Thay đổi thông tin thành công!!!');</script>";
 
 }
 }
@@ -22,7 +22,7 @@ echo "<script>alert('Your Profile updated Successfully');</script>";
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>User | Edit Profile</title>
+		<title>Doctr | Edit Doctor Details</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -50,24 +50,21 @@ echo "<script>alert('Your Profile updated Successfully');</script>";
 		<div id="app">		
 <?php include('include/sidebar.php');?>
 			<div class="app-content">
-				
-						<?php include('include/header.php');?>
-						
-				<!-- end: TOP NAVBAR -->
+				<?php include('include/header.php');?>
 				<div class="main-content" >
 					<div class="wrap-content container" id="container">
 						<!-- start: PAGE TITLE -->
 						<section id="page-title">
 							<div class="row">
 								<div class="col-sm-8">
-									<h1 class="mainTitle">User | Edit Profile</h1>
+									<h1 class="mainTitle">BÁC SĨ | Cập nhật thông tin</h1>
 																	</div>
 								<ol class="breadcrumb">
 									<li>
-										<span>User </span>
+										<span>Doctor</span>
 									</li>
 									<li class="active">
-										<span>Edit Profile</span>
+										<span>Thông tin</span>
 									</li>
 								</ol>
 							</div>
@@ -82,49 +79,66 @@ echo "<script>alert('Your Profile updated Successfully');</script>";
 										<div class="col-lg-8 col-md-12">
 											<div class="panel panel-white">
 												<div class="panel-heading">
-													<h5 class="panel-title">Edit Profile</h5>
+													<h5 class="panel-title">Vui lòng nhập thông tin</h5>
 												</div>
 												<div class="panel-body">
-									<?php $sql=mysql_query("select * from users where email='".$_SESSION['login']."'");
+									<?php $sql=mysql_query("select * from doctors where docEmail='".$_SESSION['dlogin']."'");
 while($data=mysql_fetch_array($sql))
 {
 ?>
-													<form role="form" name="edit" method="post">
-													
+													<form role="form" name="adddoc" method="post" onSubmit="return valid();">
+														<div class="form-group">
+															<label for="DoctorSpecialization">
+																Khoa khám
+															</label>
+							<select name="Doctorspecialization" class="form-control" required="required">
+					<option value="<?php echo htmlentities($data['specilization']);?>">
+					<?php echo htmlentities($data['specilization']);?></option>
+<?php $ret=mysql_query("select * from doctorspecilization");
+while($row=mysql_fetch_array($ret))
+{
+?>
+																<option value="<?php echo htmlentities($row['specilization']);?>">
+																	<?php echo htmlentities($row['specilization']);?>
+																</option>
+																<?php } ?>
+																
+															</select>
+														</div>
 
 <div class="form-group">
-															<label for="fname">
-																 User Name
+															<label for="doctorname">
+																 Tên 
 															</label>
-	<input type="text" name="fname" class="form-control" value="<?php echo htmlentities($data['fullName']);?>" >
+	<input type="text" name="docname" class="form-control" value="<?php echo htmlentities($data['doctorName']);?>" >
 														</div>
 
 
 <div class="form-group">
 															<label for="address">
-																 Address
+																 Địa chỉ
 															</label>
-					<textarea name="address" class="form-control"><?php echo htmlentities($data['address']);?></textarea>
+					<textarea name="clinicaddress" class="form-control"><?php echo htmlentities($data['address']);?></textarea>
 														</div>
 <div class="form-group">
-															<label for="city">
-																 City
+															<label for="fess">
+																 Chi phí
 															</label>
-		<input type="text" name="city" class="form-control" required="required"  value="<?php echo htmlentities($data['city']);?>" >
+		<input type="text" name="docfees" class="form-control" required="required"  value="<?php echo htmlentities($data['docFees']);?>" >
 														</div>
 	
 <div class="form-group">
-									<label for="gender">
-																Gender
+									<label for="fess">
+																 Số điện thoại
 															</label>
-					<input type="text" name="gender" class="form-control" required="required"  value="<?php echo htmlentities($data['gender']);?>">
+					<input type="text" name="doccontact" class="form-control" required="required"  value="<?php echo htmlentities($data['contactno']);?>">
 														</div>
 
 <div class="form-group">
 									<label for="fess">
-																 User Email
+																 Email
 															</label>
-					<input type="email" name="uemail" class="form-control"  readonly="readonly"  value="<?php echo htmlentities($data['email']);?>">
+					<input type="email" name="docemail" class="form-control"  readonly="readonly"  value="<?php echo htmlentities($data['docEmail']);?>">
 														</div>
 
 
@@ -134,7 +148,7 @@ while($data=mysql_fetch_array($sql))
 														
 														
 														<button type="submit" name="submit" class="btn btn-o btn-primary">
-															Update
+															Cập nhật
 														</button>
 													</form>
 												</div>
@@ -143,15 +157,9 @@ while($data=mysql_fetch_array($sql))
 											
 											</div>
 										</div>
-									<div class="col-lg-12 col-md-12">
-											<div class="panel panel-white">
-												
-												
-											</div>
-										</div>
-									</div>
+									
 								</div>
-						
+							
 						<!-- end: BASIC EXAMPLE -->
 			
 					

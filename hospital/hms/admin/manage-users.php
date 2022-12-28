@@ -4,11 +4,18 @@ session_start();
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
+
+if(isset($_GET['del']))
+		  {
+		          mysql_query("delete from users where id = '".$_GET['id']."'");
+                  $_SESSION['msg']="Xóa Bệnh nhân thành công!!";
+		  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Admin | User Session Logs</title>
+		<meta charset="UTF-8">
+		<title>Admin | Manage Patients</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,8 +42,8 @@ check_login();
 <?php include('include/sidebar.php');?>
 			<div class="app-content">
 				
-
-					<?php include('include/header.php');?>
+						<?php include('include/header.php');?>
+						
 				<!-- end: TOP NAVBAR -->
 				<div class="main-content" >
 					<div class="wrap-content container" id="container">
@@ -44,14 +51,14 @@ check_login();
 						<section id="page-title">
 							<div class="row">
 								<div class="col-sm-8">
-									<h1 class="mainTitle">Lịch sử hoạt động Bệnh nhân</h1>
+									<h1 class="mainTitle">Admin | Quản lý Bệnh nhân</h1>
 																	</div>
 								<ol class="breadcrumb">
 									<li>
-										<span>Admin </span>
+										<span>Admin</span>
 									</li>
 									<li class="active">
-										<span>User Session Logs</span>
+										<span>Quản lý Bệnh nhân</span>
 									</li>
 								</ol>
 							</div>
@@ -63,26 +70,27 @@ check_login();
 
 									<div class="row">
 								<div class="col-md-12">
-									
+									<h5 class="over-title margin-bottom-15">Quản lý <span class="text-bold">Bệnh nhân</span></h5>
 									<p style="color:red;"><?php echo htmlentities($_SESSION['msg']);?>
 								<?php echo htmlentities($_SESSION['msg']="");?></p>	
 									<table class="table table-hover" id="sample-table-1">
 										<thead>
 											<tr>
 												<th class="center">STT</th>
-												<th class="hidden-xs">ID</th>
-												<th>Username</th>
-												<th>User IP</th>
-												<th>Login time</th>
-												<th>Logout Time </th>
-												<th> Status </th>
-												
+												<th>Tên</th>
+												<th class="hidden-xs">Địa chỉ</th>
+												<th>Số điện thoại</th>
+												<th>Giới tính </th>
+												<th>Email </th>
+												<th>Ngày tạo</th>
+												<th>Ngày cập nhật</th>
+												<th>Tùy chọn</th>
 												
 											</tr>
 										</thead>
 										<tbody>
 <?php
-$sql=mysql_query("select * from userlog ");
+$sql=mysql_query("select * from users");
 $cnt=1;
 while($row=mysql_fetch_array($sql))
 {
@@ -90,25 +98,45 @@ while($row=mysql_fetch_array($sql))
 
 											<tr>
 												<td class="center"><?php echo $cnt;?>.</td>
-												<td class="hidden-xs"><?php echo $row['uid'];?></td>
-												<td class="hidden-xs"><?php echo $row['username'];?></td>
-												<td><?php echo $row['userip'];?></td>
-												<td><?php echo $row['loginTime'];?></td>
-												<td><?php echo $row['logout'];?>
+												<td class="hidden-xs"><?php echo $row['fullName'];?></td>
+												<td><?php echo $row['address'];?></td>
+												<td><?php echo $row['city'];?>
 												</td>
-												
-												<td>
-<?php if($row['status']==1)
-{
-	echo "Success";
-}
-else
-{
-	echo "Failed";
-}?>
-
-</td>
-												
+												<td><?php echo $row['gender'];?></td>
+												<td><?php echo $row['email'];?></td>
+												<td><?php echo $row['regDate'];?></td>
+												<td><?php echo $row['updationDate'];?>
+												</td>
+												<td >
+												<div class="visible-md visible-lg hidden-sm hidden-xs">
+							
+													
+	<a href="manage-users.php?id=<?php echo $row['id']?>&del=delete" onClick="return confirm('Bạn có chắc chắn muốn xóa?')"class="btn btn-transparent btn-xs tooltips" tooltip-placement="top" tooltip="Remove"><i class="fa fa-times fa fa-white"></i></a>
+												</div>
+												<div class="visible-xs visible-sm hidden-md hidden-lg">
+													<div class="btn-group" dropdown is-open="status.isopen">
+														<button type="button" class="btn btn-primary btn-o btn-sm dropdown-toggle" dropdown-toggle>
+															<i class="fa fa-cog"></i>&nbsp;<span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu pull-right dropdown-light" role="menu">
+															<li>
+																<a href="#">
+																	Edit
+																</a>
+															</li>
+															<li>
+																<a href="#">
+																	Share
+																</a>
+															</li>
+															<li>
+																<a href="#">
+																	Remove
+																</a>
+															</li>
+														</ul>
+													</div>
+												</div></td>
 											</tr>
 											
 											<?php 
@@ -121,7 +149,8 @@ $cnt=$cnt+1;
 								</div>
 							</div>
 								</div>
-						
+							</div>
+						</div>
 						<!-- end: BASIC EXAMPLE -->
 						<!-- end: SELECT BOXES -->
 						

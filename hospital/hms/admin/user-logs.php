@@ -4,12 +4,11 @@ session_start();
 include('include/config.php');
 include('include/checklogin.php');
 check_login();
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>User  | Dashboard</title>
+		<title>Admin | User Session Logs</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,16 +29,14 @@ check_login();
 		<link rel="stylesheet" href="assets/css/styles.css">
 		<link rel="stylesheet" href="assets/css/plugins.css">
 		<link rel="stylesheet" href="assets/css/themes/theme-1.css" id="skin_color" />
-
-
 	</head>
 	<body>
 		<div id="app">		
 <?php include('include/sidebar.php');?>
 			<div class="app-content">
 				
-						<?php include('include/header.php');?>
-						
+
+					<?php include('include/header.php');?>
 				<!-- end: TOP NAVBAR -->
 				<div class="main-content" >
 					<div class="wrap-content container" id="container">
@@ -47,72 +44,83 @@ check_login();
 						<section id="page-title">
 							<div class="row">
 								<div class="col-sm-8">
-									<h1 class="mainTitle">BỆNH NHÂN</h1>
+									<h1 class="mainTitle">Lịch sử hoạt động Bệnh nhân</h1>
 																	</div>
 								<ol class="breadcrumb">
 									<li>
-										<span>User</span>
+										<span>Admin </span>
 									</li>
 									<li class="active">
-										<span>Dashboard</span>
+										<span>Lịch sử đăng nhập</span>
 									</li>
 								</ol>
 							</div>
 						</section>
 						<!-- end: PAGE TITLE -->
 						<!-- start: BASIC EXAMPLE -->
-							<div class="container-fluid container-fullw bg-white">
-							<div class="row">
-								<div class="col-sm-4">
-									<div class="panel panel-white no-radius text-center">
-										<div class="panel-body">
-											<span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-smile-o fa-stack-1x fa-inverse"></i> </span>
-											<h2 class="StepTitle">THÔNG TIN</h2>
+						<div class="container-fluid container-fullw bg-white">
+						
+
+									<div class="row">
+								<div class="col-md-12">
+									
+									<p style="color:red;"><?php echo htmlentities($_SESSION['msg']);?>
+								<?php echo htmlentities($_SESSION['msg']="");?></p>	
+									<table class="table table-hover" id="sample-table-1">
+										<thead>
+											<tr>
+												<th class="center">STT</th>
+												<th class="hidden-xs">ID</th>
+												<th>Username</th>
+												<th>Thời gian đăng nhập</th>
+												<th>Thời gian đăng xuất</th>
+												<th> Trạng thái </th>
+												
+												
+											</tr>
+										</thead>
+										<tbody>
+<?php
+$sql=mysql_query("select * from userlog ");
+$cnt=1;
+while($row=mysql_fetch_array($sql))
+{
+?>
+
+											<tr>
+												<td class="center"><?php echo $cnt;?>.</td>
+												<td class="hidden-xs"><?php echo $row['uid'];?></td>
+												<td class="hidden-xs"><?php echo $row['username'];?></td>
+												<td><?php echo $row['loginTime'];?></td>
+												<td><?php echo $row['logout'];?>
+												</td>
+												
+												<td>
+<?php if($row['status']==1)
+{
+	echo "Thành công";
+}
+else
+{
+	echo "Thất bại";
+}?>
+
+</td>
+												
+											</tr>
 											
-											<p class="links cl-effect-1">
-												<a href="edit-profile.php">
-													Cập nhật
-												</a>
-											</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="panel panel-white no-radius text-center">
-										<div class="panel-body">
-											<span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-paperclip fa-stack-1x fa-inverse"></i> </span>
-											<h2 class="StepTitle">LỊCH KHÁM</h2>
-										
-											<p class="cl-effect-1">
-												<a href="appointment-history.php">
-													Xem lịch khám
-												</a>
-											</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="panel panel-white no-radius text-center">
-										<div class="panel-body">
-											<span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-terminal fa-stack-1x fa-inverse"></i> </span>
-											<h2 class="StepTitle"> ĐẶT LỊCH KHÁM</h2>
+											<?php 
+$cnt=$cnt+1;
+											 }?>
 											
-											<p class="links cl-effect-1">
-												<a href="book-appointment.php">
-													Đặt
-												</a>
-											</p>
-										</div>
-									</div>
+											
+										</tbody>
+									</table>
 								</div>
 							</div>
-						</div>
-			
-					
-					
+								</div>
 						
-						
-					
+						<!-- end: BASIC EXAMPLE -->
 						<!-- end: SELECT BOXES -->
 						
 					</div>
